@@ -4,3 +4,4 @@ conf.sh
 tmp
 src
 *.sw?
+/dot-files
