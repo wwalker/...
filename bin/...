@@ -287,7 +287,7 @@ sub do_install {
     $class->_check_deps;
     print _install_report_for($n, $n_skipped, $method);
     if ('symlink' eq $method) {
-        my @watched_dirs = map { "$home_dir/$_" } qw(bin .sh .zsh .bash .vim);
+        my @watched_dirs = map { "$home_dir/$_" } qw(tg-bin bin .sh .zsh .bash .vim);
         my @existing_watched_dirs = grep { -d } @watched_dirs;
         print "  Checking for dead symlinks in @existing_watched_dirs\n";
         my @bad_symlinks = $class->_find_dead_symlinks(@existing_watched_dirs);
@@ -677,7 +677,7 @@ sub _all_files {
         for my $file (`(cd $path; find -L . -type f)`) {
             $file =~ s!^\./!!;
             chomp($file);
-            next unless $file =~ /^(?:\.|bin\/)/;
+            next unless $file =~ /^(?:\.|tg-bin|bin\/)/;
             next if $file =~ /(\.sw.|~)$/;
             next if $file =~ /\.git\//;
             next if $file =~ /\.(git|gitignore|gitmodules)$/;
