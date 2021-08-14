@@ -2,5 +2,6 @@ backup
 conf
 conf.sh
 tmp
-src
+src/dot-files
+src/tg-dots
 *.sw?
