@@ -16,6 +16,9 @@ Commands:
     conf conf-file-path | conf-file-url | <stdin>
 	      - Put content into the .../conf configuration file.
     backup    - Backup all the dot files that would be changed by 'install'.
+    fix       - Run ~wwalker/bin/fix-... (reconciles repos to targets)
+    dataloss  - Do any targets have data in them that was never in the source repo
+    orphans   - Find files in target directories that are not in the repos
     install   - Copy or link all the dot files into your $HOME directory.
       -h | --hardlink Use hardlinks (default)
       -s | --symlink  Use symlinks
