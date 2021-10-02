@@ -590,7 +590,6 @@ sub _quiet_run_sys {
 sub _find_dead_symlinks {
     my ($class, @dirs) = @_;
     my @reaped = ();
-    return;
     for my $dir (@dirs) {
         opendir my $dh, $dir or fatal_error("Couldn't open $dir");
         while (readdir $dh) {
@@ -681,7 +680,8 @@ sub _all_files {
         for my $file (`(cd $path; find . -type l -or -type f)`) {
             $file =~ s!^\./!!;
             chomp($file);
-            next unless $file =~ /^(?:\.|tg-bin|bin\/)/;
+            next if $file =~ /^README.md/i;
+            next if $file =~ /^ATTIC/;
             next if $file =~ /(\.sw.|~)$/;
             next if $file =~ /\.git\//;
             next if $file =~ /\.(git|gitignore|gitmodules)$/;
