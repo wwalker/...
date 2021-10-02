@@ -590,6 +590,7 @@ sub _quiet_run_sys {
 sub _find_dead_symlinks {
     my ($class, @dirs) = @_;
     my @reaped = ();
+    return;
     for my $dir (@dirs) {
         opendir my $dh, $dir or fatal_error("Couldn't open $dir");
         while (readdir $dh) {
@@ -611,7 +612,7 @@ sub _up_to_date {
     my $src = shift;
     my $dst = shift;
     my $method = shift;
-    die "Error: '$src' file does not exist" unless -f $src;
+    die "Error: '$src' file does not exist" unless ((-f $src ) || ( -l $src ));
     return 0 if -s $dst != -s $src;
     if ('symlink' eq $method) {
         return readlink($dst) eq $src
@@ -677,7 +678,7 @@ sub _all_files {
     for my $entry ($class->_all_dot_paths) {
         my $path = $entry->{path};
         $class->_check_path($path);
-        for my $file (`(cd $path; find -L . -type f)`) {
+        for my $file (`(cd $path; find . -type l -or -type f)`) {
             $file =~ s!^\./!!;
             chomp($file);
             next unless $file =~ /^(?:\.|tg-bin|bin\/)/;
