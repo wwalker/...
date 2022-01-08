@@ -82,6 +82,9 @@ my $timestamp;      # Time stamp
 my $restore_from;   # Directory to restore from
 my $conf_path;
 
+my $links_attempted = 0; # Count of symlink() calls
+my $links_made = 0; # Count of symlink() calls that succeeded
+
 my $cli_install_method = '';
 
 my $no_conf_msg = <<"...";
@@ -278,11 +281,13 @@ sub do_install {
         if ('copy' eq $method) {
             $class->_run_sys("cp $src $dst");
         } elsif ('hardlink' eq $method) {
-            cmd_print(35, "ln $src $dst");
+            # cmd_print(35, "ln $src $dst");
             link $src, $dst or fatal_error("Could not hardlink $src to $dst");
         } elsif ('symlink' eq $method) {
-            cmd_print("36;1", "ln -s $src $dst");
+            # cmd_print("36;1", "ln -s $src $dst");
+            $links_attempted++;
             symlink $src, $dst or fatal_error("Could not symlink $src to $dst");
+            $links_made++;
         } else {
             die "Invalid install method '$method'";
         }
