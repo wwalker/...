@@ -1,7 +1,6 @@
-backup
-conf
-conf.sh
-tmp
-src/dot-files
-src/tg-dots
-*.sw?
+/backup
+/conf
+/conf.sh
+/tmp
+/src/dot-files
+*.sw[pqr]
