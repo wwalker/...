@@ -2,5 +2,5 @@
 /conf
 /conf.sh
 /tmp
-/src/dot-files
+/src
 *.sw[pqr]
