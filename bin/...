@@ -270,6 +270,9 @@ sub do_install {
         if ($class->_up_to_date($src, $dst, $method)) {
             $n_skipped++;
             next;
+            # } else {
+            #     print "$src\n";
+            #     $class->_up_to_date($src, $dst, $method);
         }
         $n++;
         my $dir = $dst;
@@ -281,7 +284,7 @@ sub do_install {
         if ('copy' eq $method) {
             $class->_run_sys("cp $src $dst");
         } elsif ('hardlink' eq $method) {
-            # cmd_print(35, "ln $src $dst");
+            cmd_print(35, "ln $src $dst");
             link $src, $dst or fatal_error("Could not hardlink $src to $dst");
         } elsif ('symlink' eq $method) {
             # cmd_print("36;1", "ln -s $src $dst");
@@ -617,11 +620,15 @@ sub _up_to_date {
     my $dst = shift;
     my $method = shift;
     die "Error: '$src' file does not exist" unless ((-f $src ) || ( -l $src ));
-    return 0 if -s $dst != -s $src;
+    # This line fails if the src is a symlink and it points to something not in the local git repo
+    # return 0 if -s $dst != -s $src;
     if ('symlink' eq $method) {
-        return readlink($dst) eq $src
+        my $dst_inode = (lstat $dst)[1];
+        my $src_inode = (lstat $src)[1];
+        return $src_inode eq $dst_inode;
     }
-    return $class->_up_to_date($src, $dst, 'symlink') if -l $src;
+    # Do not create a new symlink, do not test this way either
+    # return $class->_up_to_date($src, $dst, 'symlink') if -l $src;
     return 0 if -l $src ne -l $dst;
     if ('copy' eq $method) {
         return 0 if _inode_of($src) == _inode_of($dst);
@@ -638,7 +645,12 @@ sub _up_to_date {
 
 sub _inode_of {
     my $file_name = shift;
-    my ($dev, $ino) = stat $file_name;
+    my ($dev, $ino);
+    if (-l $file_name) {
+        ($dev, $ino) = lstat $file_name;
+    } else {
+        ($dev, $ino) = stat $file_name;
+    }
     return $ino
 }
 
